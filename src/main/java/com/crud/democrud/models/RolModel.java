@@ -14,10 +14,10 @@ public class RolModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true, nullable = false)
     private Long id;
-    private String rolName;
+    private String nombre;
 
-    public RolModel(String rolName) {
-        this.rolName = rolName;
+    public RolModel(String nombre) {
+        this.nombre = nombre;
     }
 
     public RolModel() {
@@ -32,12 +32,12 @@ public class RolModel {
         return id;
     }
 
-    public void setRolName(String rolName) {
-        this.rolName = rolName;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
-    public String getRolName() {
-        return rolName;
+    public String getNombre() {
+        return nombre;
     }
 
 }
