@@ -45,4 +45,21 @@ public class UsuarioController {
         }
     }
 
+    /**
+     * Actualiza el usuario encontrado por id completamente todos sus campos
+     *
+     * @param id Identificador del usuario a actualizar
+     * @param usuario Objeto del usuario a actualizar
+     * @return mensaje eliminación satisfactorio de actualización
+     *
+     */
+    @PutMapping(path = "/{id}")
+    public String updateUsuario(@PathVariable("id") Long id, @RequestBody UsuarioModel usuario){
+        Optional <UsuarioModel> usuarioToUpdate = usuarioService.obtenerPorId(id);
+        if (usuarioToUpdate.isEmpty()) {
+            return "No se pudo actualizar, ningún usuario encontrado con id " + id;
+        }
+        this.usuarioService.actualizarUsuario(id,usuario);
+        return "Se actualizó el usuario con id "+id;
+    }
 }

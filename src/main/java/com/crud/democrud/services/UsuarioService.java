@@ -39,6 +39,19 @@ public class UsuarioService {
         }
     }
 
+    /**
+     * Actualiza el usuario encontrado por id
+     *
+     * @param id Identificador del usuario a actualizar
+     * @param usuario Objeto del usuario a actualizar
+     * @return mensaje eliminación satisfactorio de actualización
+     *
+     */
+    public UsuarioModel actualizarUsuario(Long id, UsuarioModel usuario){
+        usuario.setId(id);
+        usuarioRepository.save(usuario);
+        return usuario;
+    }
 
     
 }
