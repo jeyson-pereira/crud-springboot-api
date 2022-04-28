@@ -6,6 +6,9 @@ import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Column;
+import javax.persistence.ManyToMany;
+import javax.persistence.CascadeType;
+import java.util.List;
 
 @Entity
 @Table(name = "usuario")
@@ -19,6 +22,17 @@ public class UsuarioModel {
     private String nombre;
     private String email;
     private Integer prioridad;
+
+
+    @ManyToMany(targetEntity = RolModel.class,cascade = CascadeType.ALL )
+    private List<RolModel> roles;
+    public List<RolModel> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<RolModel> roles) {
+        this.roles = roles;
+    }
 
     public void setPrioridad(Integer prioridad) {
         this.prioridad = prioridad;

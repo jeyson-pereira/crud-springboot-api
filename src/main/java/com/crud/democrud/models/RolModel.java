@@ -6,6 +6,9 @@ import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Column;
+import javax.persistence.ManyToMany;
+import javax.persistence.CascadeType;
+import java.util.List;
 
 @Entity
 @Table(name = "rol")
@@ -15,6 +18,9 @@ public class RolModel {
     @Column(unique = true, nullable = false)
     private Long id;
     private String nombre;
+
+    @ManyToMany(targetEntity = UsuarioModel.class, mappedBy = "roles", cascade = CascadeType.ALL)
+    private List<UsuarioModel> usuarios;
 
     public RolModel(String nombre) {
         this.nombre = nombre;
@@ -38,6 +44,14 @@ public class RolModel {
 
     public String getNombre() {
         return nombre;
+    }
+
+    public List<UsuarioModel> getUsuarios() {
+        return usuarios;
+    }
+
+    public void setUsuarios(List<UsuarioModel> usuarios) {
+        this.usuarios = usuarios;
     }
 
 }
