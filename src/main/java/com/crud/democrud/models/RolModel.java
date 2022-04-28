@@ -29,4 +29,7 @@ public class RolModel {
     @JoinColumn(name = "id_usuario")
     @JsonBackReference
     private UsuarioModel usuario;
+
+    public RolModel(Long id, String nombre) {
+    }
 }
