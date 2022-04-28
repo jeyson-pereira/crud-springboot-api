@@ -1,57 +1,21 @@
 package com.crud.democrud.services;
 
 import com.crud.democrud.models.UsuarioModel;
-import com.crud.democrud.repositories.UsuarioRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Optional;
 
-@Service
-public class UsuarioService {
-    @Autowired
-    UsuarioRepository usuarioRepository;
-    
-    public ArrayList<UsuarioModel> obtenerUsuarios(){
-        return (ArrayList<UsuarioModel>) usuarioRepository.findAll();
-    }
+public interface UsuarioService {
 
-    public UsuarioModel guardarUsuario(UsuarioModel usuario){
-        return usuarioRepository.save(usuario);
-    }
+    ArrayList<UsuarioModel> obtenerUsuarios();
 
-    public Optional<UsuarioModel> obtenerPorId(Long id){
-        return usuarioRepository.findById(id);
-    }
+    UsuarioModel guardarUsuario(UsuarioModel usuario);
 
+    Optional<UsuarioModel> obtenerPorId(Long id);
 
-    public ArrayList<UsuarioModel>  obtenerPorPrioridad(Integer prioridad) {
-        return usuarioRepository.findByPrioridad(prioridad);
-    }
+    ArrayList<UsuarioModel>  obtenerPorPrioridad(Integer prioridad);
 
-    public boolean eliminarUsuario(Long id) {
-        try{
-            usuarioRepository.deleteById(id);
-            return true;
-        }catch(Exception err){
-            return false;
-        }
-    }
+    void eliminarUsuario(Long id);
 
-    /**
-     * Actualiza el usuario encontrado por id
-     *
-     * @param id Identificador del usuario a actualizar
-     * @param usuario Objeto del usuario a actualizar
-     * @return mensaje eliminación satisfactorio de actualización
-     *
-     */
-    public UsuarioModel actualizarUsuario(Long id, UsuarioModel usuario){
-        usuario.setId(id);
-        usuarioRepository.save(usuario);
-        return usuario;
-    }
-
-    
+    UsuarioModel actualizarUsuario(UsuarioModel usuario);
 }
