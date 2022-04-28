@@ -1,65 +1,90 @@
 package com.crud.democrud.controllers;
 
 import com.crud.democrud.models.UsuarioModel;
-import com.crud.democrud.services.UsuarioService;
+import com.crud.democrud.services.UsuarioServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Optional;
 
-@CrossOrigin
 @RestController
 @RequestMapping("/usuario")
 public class UsuarioController {
     @Autowired
-    UsuarioService usuarioService;
+    private UsuarioServiceImpl usuarioServiceImpl;
+
+    /**
+     * GET: Obtiene lista de usuarios
+     */
 
     @GetMapping()
-    public ArrayList<UsuarioModel> obtenerUsuarios() {
-        return usuarioService.obtenerUsuarios();
-    }
-
-    @PostMapping()
-    public UsuarioModel guardarUsuario(@RequestBody UsuarioModel usuario) {
-        return this.usuarioService.guardarUsuario(usuario);
-    }
-
-    @GetMapping(path = "/{id}")
-    public Optional<UsuarioModel> obtenerUsuarioPorId(@PathVariable("id") Long id) {
-        return this.usuarioService.obtenerPorId(id);
-    }
-
-    @GetMapping("/query")
-    public ArrayList<UsuarioModel> obtenerUsuarioPorPrioridad(@RequestParam("prioridad") Integer prioridad) {
-        return this.usuarioService.obtenerPorPrioridad(prioridad);
-    }
-
-    @DeleteMapping(path = "/{id}")
-    public String eliminarPorId(@PathVariable("id") Long id) {
-        boolean ok = this.usuarioService.eliminarUsuario(id);
-        if (ok) {
-            return "Se eliminó el usuario con id " + id;
-        } else {
-            return "No pudo eliminar el usuario con id" + id;
+    public ResponseEntity<ArrayList<UsuarioModel>> obtenerUsuarios() {
+        ArrayList<UsuarioModel> obtenerUsuarios = usuarioServiceImpl.obtenerUsuarios();
+        try {
+            return new ResponseEntity<>(obtenerUsuarios, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     /**
-     * Actualiza el usuario encontrado por id completamente todos sus campos
-     *
-     * @param id Identificador del usuario a actualizar
-     * @param usuario Objeto del usuario a actualizar
-     * @return mensaje eliminación satisfactorio de actualización
-     *
+     * POST: Guardar usuario
      */
-    @PutMapping(path = "/{id}")
-    public String updateUsuario(@PathVariable("id") Long id, @RequestBody UsuarioModel usuario){
-        Optional <UsuarioModel> usuarioToUpdate = usuarioService.obtenerPorId(id);
-        if (usuarioToUpdate.isEmpty()) {
-            return "No se pudo actualizar, ningún usuario encontrado con id " + id;
+    @PostMapping()
+    public ResponseEntity<UsuarioModel> guadarUsuario(@RequestBody UsuarioModel usuario) {
+        return new ResponseEntity<>(usuarioServiceImpl.guardarUsuario(usuario), HttpStatus.CREATED);
+    }
+
+    /**
+     * GET: Obtiene usuario buscado por id
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<?> buscarUsuarioPorId(@PathVariable("id") Long id) {
+        Optional<UsuarioModel> obtenerUsuario = usuarioServiceImpl.obtenerPorId(id);
+        if (obtenerUsuario.isPresent()) {
+            return new ResponseEntity<>(obtenerUsuario, HttpStatus.OK);
         }
-        this.usuarioService.actualizarUsuario(id,usuario);
-        return "Se actualizó el usuario con id "+id;
+        return new ResponseEntity<>("No se encontro el usuario con id "+ id, HttpStatus.NOT_FOUND);
+    }
+
+    /**
+     * PUT: Actualiza usuario
+     */
+    @PutMapping("/actualizar")
+    public ResponseEntity<?> actualizarUsuario(@RequestBody UsuarioModel usuario) {
+        Optional<UsuarioModel> obtenerUsuario = usuarioServiceImpl.obtenerPorId(usuario.getId());
+        if (obtenerUsuario.isPresent()) {
+            return new ResponseEntity<>(usuarioServiceImpl.actualizarUsuario(usuario), HttpStatus.OK);
+        }
+        return new ResponseEntity<>("El usuario que deseas actualizar no existe", HttpStatus.NOT_FOUND);
+    }
+
+    /**
+     * GET: Encuentra lista usuarios por prioridad
+     */
+    @GetMapping("/prioridad/{prioridad}")
+    public ResponseEntity<?> obtenerUsuariosPorPrioridad(@PathVariable("prioridad") Integer prioridad) {
+        try {
+            return new ResponseEntity<>(usuarioServiceImpl.obtenerPorPrioridad(prioridad), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
+    /**
+     * DELETE: Elimina usuario encontrado por id
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> eliminarUnUsuario(@PathVariable("id") Long id) {
+        Optional<UsuarioModel> obtenerUsuario = usuarioServiceImpl.obtenerPorId(id);
+        if (obtenerUsuario.isPresent()) {
+            usuarioServiceImpl.eliminarUsuario(id);
+            return new ResponseEntity<>("Usuario eliminado exitosamente", HttpStatus.ACCEPTED);
+        }
+        return new ResponseEntity<>("El usuario que deseas eliminar no existe", HttpStatus.NOT_FOUND);
     }
 }
