@@ -1,17 +1,18 @@
 package com.crud.democrud.models;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.Id;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Column;
-import javax.persistence.ManyToMany;
-import javax.persistence.CascadeType;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "usuario")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "usuarios")
 public class UsuarioModel {
 
     @Id
@@ -19,61 +20,19 @@ public class UsuarioModel {
     @Column(unique = true, nullable = false)
     private Long id;
 
+    @Column(name = "nombre")
     private String nombre;
+    @Column(name = "email")
     private String email;
+    @Column(name = "prioridad")
     private Integer prioridad;
 
-
-    @ManyToMany(targetEntity = RolModel.class,cascade = CascadeType.ALL )
+    @OneToMany(
+            mappedBy = "usuario",
+            targetEntity = RolModel.class,
+            fetch = FetchType.EAGER,
+            cascade = CascadeType.REMOVE
+    )
+    @JsonManagedReference
     private List<RolModel> roles;
-    public List<RolModel> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(List<RolModel> roles) {
-        this.roles = roles;
-    }
-
-    public void setPrioridad(Integer prioridad) {
-        this.prioridad = prioridad;
-    }
-
-    public Integer getPrioridad() {
-        return prioridad;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public UsuarioModel(String nombre, String email, Integer prioridad) {
-        this.nombre = nombre;
-        this.email = email;
-        this.prioridad = prioridad;
-    }
-
-    public UsuarioModel() {
-
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
 }
